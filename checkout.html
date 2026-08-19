@@ -3,39 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Checkout | Aces Live</title>
-  <script>
-    // Checkout is intentionally canonicalized to NEVERFOLD before Cleeng loads.
-    // replaceState does not reload the page.
-    (function () {
-      const url = new URL(window.location.href);
-      if (url.searchParams.get("couponCode") !== "NEVERFOLD") {
-        url.searchParams.set("couponCode", "NEVERFOLD");
-        history.replaceState({}, "", url.pathname + url.search + url.hash);
-      }
-    })();
-  </script>
+  <title>Aces Live Checkout</title>
   <script type="module" src="https://widgets.prod.cleeng.com/cleeng.js"></script>
   <link rel="stylesheet" href="./styles.css" />
 </head>
-<body class="flow-page">
-  <header class="site-nav flow-nav">
-    <a class="logo" href="./index.html"><span class="aces-mark">A</span><span>ACES LIVE</span></a>
-    <div class="nav-actions"><a class="nav-link" data-account-link href="./login.html">LOGIN</a><a class="nav-link" href="./index.html">HOME</a></div>
+<body class="flow-body">
+  <header class="flow-nav">
+    <a class="logo" href="./"><div class="aces-mark">A</div><span>ACES LIVE</span></a>
+    <a class="back-link" href="./">← BACK TO ACES LIVE</a>
   </header>
 
   <main class="flow-shell">
-    <div class="flow-heading"><span class="eyebrow">ACES LIVE</span><h1>START STREAMING</h1><p>Your promotional code is applied from the checkout page URL. Sign in inside Checkout if Cleeng asks you to authenticate, then complete your purchase.</p></div>
-    <div class="widget-card">
-      <div
-        data-cleeng-widget="checkout"
-        data-cleeng-publisher-id="279964512"
-        data-cleeng-offer-id="S664032765_US"
-        data-cleeng-language="en-US"
-        data-cleeng-props='{"checkout":{"mode":"standard","paymentSuccessRedirectUrl":"https://kaltavas-debug.github.io/aces-live-test/index.html"}}'>
+    <section class="flow-card">
+      <div class="flow-card-header"><span class="eyebrow">ACES LIVE</span><h1>START STREAMING</h1><p>Complete your subscription below.</p></div>
+      <div class="widget-wrap">
+        <div
+          data-cleeng-widget="checkout"
+          data-cleeng-publisher-id="279964512"
+          data-cleeng-offer-id="S664032765_US"
+          data-cleeng-language="en-US">
+        </div>
       </div>
-    </div>
-    <div class="flow-actions"><a class="back-link" href="./index.html">← BACK TO ACES LIVE</a><span class="status-pill"><span class="status-dot"></span><span data-auth-status>SIGNED OUT</span></span></div>
+    </section>
   </main>
 
   <script src="./common.js"></script>

@@ -3,22 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My Account | Aces Live</title>
+  <title>Aces Live Account</title>
   <script type="module" src="https://widgets.prod.cleeng.com/cleeng.js"></script>
   <link rel="stylesheet" href="./styles.css" />
 </head>
-<body class="flow-page">
-  <header class="site-nav flow-nav">
-    <a class="logo" href="./index.html"><span class="aces-mark">A</span><span>ACES LIVE</span></a>
-    <div class="nav-actions"><a class="nav-link" href="./index.html">HOME</a><button class="nav-link" data-logout>LOGOUT</button><a class="nav-cta" data-checkout-link href="./checkout.html?couponCode=NEVERFOLD">START STREAMING</a></div>
+<body class="flow-body">
+  <header class="flow-nav">
+    <a class="logo" href="./"><div class="aces-mark">A</div><span>ACES LIVE</span></a>
+    <div class="nav-actions"><button class="logout-btn page-logout" id="logoutBtn">LOGOUT</button><a class="back-link" href="./">← BACK TO ACES LIVE</a></div>
   </header>
 
   <main class="flow-shell">
-    <div class="flow-heading"><span class="eyebrow">ACES LIVE</span><h1>MY ACCOUNT</h1><p>Manage your profile, payment details and Aces Live subscription.</p></div>
-    <div class="widget-card">
-      <div data-cleeng-widget="account" data-cleeng-publisher-id="279964512" data-cleeng-language="en-US"></div>
-    </div>
-    <div class="flow-actions"><a class="back-link" href="./index.html">← BACK TO ACES LIVE</a><button class="logout-action" data-logout>LOGOUT</button></div>
+    <section class="flow-card">
+      <div class="flow-card-header"><span class="eyebrow">ACES LIVE</span><h1>MY ACCOUNT</h1><p>Manage your profile, subscription and billing details.</p></div>
+      <div class="widget-wrap">
+        <div data-cleeng-widget="account" data-cleeng-publisher-id="279964512" data-cleeng-language="en-US"></div>
+      </div>
+    </section>
   </main>
 
   <script src="./common.js"></script>

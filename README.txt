@@ -1,21 +1,14 @@
-ACES LIVE — GitHub Pages multi-page build
-
-Upload ALL of these files to the root of your existing GitHub repo:
+Upload these files to the ROOT of your GitHub Pages repo:
 - index.html
-- login.html
-- account.html
 - checkout.html
+- account.html
 - styles.css
 - common.js
 
-GitHub Pages URL:
-https://kaltavas-debug.github.io/aces-live-test/
+Delete the old login.html and app.js if they still exist.
 
-Checkout URL is deliberately fixed to:
-https://kaltavas-debug.github.io/aces-live-test/checkout.html?couponCode=NEVERFOLD
-
-Cleeng environment: Production
-Cleeng publisher ID: 279964512
-Cleeng offer ID: S664032765_US
-
-Pages are separated so only one Cleeng widget is mounted on each flow page. The homepage loads Cleeng only for auth-state-aware navigation and does not mount a widget.
+Flow:
+- Login stays embedded on index.html (no separate login page)
+- Start Streaming goes to checkout.html?couponCode=NEVERFOLD
+- My Account goes to account.html after auth is detected
+- Logout clears Cleeng session and local auth storage
