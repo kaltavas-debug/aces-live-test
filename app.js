@@ -1,3 +1,15 @@
+/* ==========================================
+   CONFIG
+========================================== */
+
+const STATIC_CHECKOUT_URL =
+  "https://kaltavas-debug.github.io/aces-live-test/?couponCode=NEVERFOLD";
+
+
+/* ==========================================
+   ELEMENTS
+========================================== */
+
 const checkoutModal =
   document.getElementById("checkoutModal");
 
@@ -36,6 +48,7 @@ let cleengRefreshToken = null;
 ========================================== */
 
 function closeAll() {
+
   document
     .querySelectorAll(".modal")
     .forEach(modal => {
@@ -47,6 +60,7 @@ function closeAll() {
 
 
 function openModal(modal) {
+
   closeAll();
 
   modal.classList.add("active");
@@ -60,25 +74,40 @@ function openModal(modal) {
 ========================================== */
 
 function updateHeader() {
+
   if (isLoggedIn) {
-    accountBtn.textContent = "MY ACCOUNT";
-    logoutBtn.style.display = "inline-block";
+
+    accountBtn.textContent =
+      "MY ACCOUNT";
+
+    logoutBtn.style.display =
+      "inline-block";
+
   } else {
-    accountBtn.textContent = "LOGIN";
-    logoutBtn.style.display = "none";
+
+    accountBtn.textContent =
+      "LOGIN";
+
+    logoutBtn.style.display =
+      "none";
+
   }
+
 }
 
 
 /* ==========================================
-   AUTH TOKEN STORAGE
+   TOKEN STORAGE
 ========================================== */
 
 function saveTokens(jwt, refreshToken) {
+
   cleengJWT = jwt;
   cleengRefreshToken = refreshToken;
 
+
   if (jwt && refreshToken) {
+
     localStorage.setItem(
       "acesCleengJWT",
       jwt
@@ -88,7 +117,9 @@ function saveTokens(jwt, refreshToken) {
       "acesCleengRefreshToken",
       refreshToken
     );
+
   } else {
+
     localStorage.removeItem(
       "acesCleengJWT"
     );
@@ -96,21 +127,25 @@ function saveTokens(jwt, refreshToken) {
     localStorage.removeItem(
       "acesCleengRefreshToken"
     );
+
   }
+
 }
 
 
 /* ==========================================
-   SYNC CLEENG SESSION
+   SYNC AUTH WITH CLEENG
 ========================================== */
 
 async function syncCleengAuth() {
+
   if (
     !cleengJWT ||
     !cleengRefreshToken
   ) {
     return false;
   }
+
 
   if (
     !window.cleeng ||
@@ -120,22 +155,35 @@ async function syncCleengAuth() {
     return false;
   }
 
+
   try {
+
     await window.cleeng.setAuthTokens({
       jwt: cleengJWT,
       refreshToken: cleengRefreshToken
     });
 
+
+    console.log(
+      "Cleeng authentication synced"
+    );
+
+
     return true;
 
+
   } catch (error) {
+
     console.error(
-      "Cleeng token sync failed:",
+      "Cleeng auth sync failed:",
       error
     );
 
+
     return false;
+
   }
+
 }
 
 
@@ -144,25 +192,62 @@ async function syncCleengAuth() {
 ========================================== */
 
 async function openCheckout() {
-  if (isLoggedIn) {
-    await syncCleengAuth();
-  }
 
   const params =
     new URLSearchParams(
       window.location.search
     );
 
-  console.log(
-    "Coupon:",
-    params.get("couponCode")
-  );
+
+  const coupon =
+    params.get("couponCode");
+
+
+  /*
+   Always force checkout to use:
+
+   ?couponCode=NEVERFOLD
+  */
+
+  if (coupon !== "NEVERFOLD") {
+
+    sessionStorage.setItem(
+      "openCheckoutAfterReload",
+      "true"
+    );
+
+
+    window.location.href =
+      STATIC_CHECKOUT_URL;
+
+
+    return;
+
+  }
+
+
+  /*
+   If customer is authenticated,
+   sync tokens before checkout opens.
+  */
+
+  if (isLoggedIn) {
+
+    await syncCleengAuth();
+
+  }
+
 
   openModal(
     checkoutModal
   );
+
 }
 
+
+/* ==========================================
+   START STREAMING BUTTONS
+========================================== */
 
 heroStreamBtn.addEventListener(
   "click",
@@ -184,21 +269,35 @@ accountBtn.addEventListener(
   "click",
   async () => {
 
+
+    /*
+     Logged in:
+     open Account widget.
+    */
+
     if (isLoggedIn) {
 
       await syncCleengAuth();
+
 
       openModal(
         accountModal
       );
 
-    } else {
 
-      openModal(
-        loginModal
-      );
+      return;
 
     }
+
+
+    /*
+     Logged out:
+     open Login widget.
+    */
+
+    openModal(
+      loginModal
+    );
 
   }
 );
@@ -213,36 +312,56 @@ logoutBtn.addEventListener(
   async () => {
 
     try {
+
       if (
         window.cleeng &&
         typeof window.cleeng.logout ===
           "function"
       ) {
+
         await window.cleeng.logout();
+
       }
+
     } catch (error) {
+
       console.error(
         "Logout error:",
         error
       );
+
     }
+
+
+    /*
+     Clear locally stored tokens.
+    */
 
     saveTokens(
       null,
       null
     );
 
+
     isLoggedIn = false;
+
 
     updateHeader();
 
+
     closeAll();
+
+
+    console.log(
+      "Customer logged out"
+    );
+
   }
 );
 
 
 /* ==========================================
-   CLOSE MODALS
+   CLOSE DRAWERS
 ========================================== */
 
 document
@@ -264,7 +383,9 @@ document.addEventListener(
   event => {
 
     if (event.key === "Escape") {
+
       closeAll();
+
     }
 
   }
@@ -272,36 +393,67 @@ document.addEventListener(
 
 
 /* ==========================================
-   CLEENG AUTH
+   CONNECT TO CLEENG
 ========================================== */
 
 function connectToCleeng() {
+
+
+  /*
+   cleeng.js loads asynchronously.
+
+   Wait until the global API exists.
+  */
+
   if (
     !window.cleeng ||
     typeof window.cleeng
       .onAuthTokensUpdate !==
       "function"
   ) {
+
     setTimeout(
       connectToCleeng,
       200
     );
 
+
     return;
+
   }
+
+
+  /*
+   Don't register twice.
+  */
 
   if (cleengConnected) {
     return;
   }
 
+
   cleengConnected = true;
 
 
+  console.log(
+    "Cleeng connected"
+  );
+
+
+  /* ========================================
+     AUTH CHANGE LISTENER
+  ======================================== */
+
   window.cleeng.onAuthTokensUpdate(
-    async ({ jwt, refreshToken }) => {
+
+    async ({
+      jwt,
+      refreshToken
+    }) => {
+
 
       console.log(
-        "Cleeng auth update:",
+        "Cleeng authentication update:",
         {
           jwt: Boolean(jwt),
           refreshToken:
@@ -310,33 +462,40 @@ function connectToCleeng() {
       );
 
 
+      /*
+       CUSTOMER LOGGED IN
+      */
+
       if (
         jwt &&
         refreshToken
       ) {
+
 
         saveTokens(
           jwt,
           refreshToken
         );
 
+
         isLoggedIn = true;
+
 
         updateHeader();
 
+
         /*
-         Keep all Hosted Widgets
-         on the same auth session.
+         Synchronize all Cleeng widgets.
         */
+
         await syncCleengAuth();
 
 
         /*
+         Close login drawer.
+
          IMPORTANT:
          NO REDIRECT.
-
-         Just close Login and
-         remain on this exact page.
         */
 
         if (
@@ -344,35 +503,46 @@ function connectToCleeng() {
             "active"
           )
         ) {
+
           closeAll();
+
         }
 
 
-      } else {
-
-        saveTokens(
-          null,
-          null
-        );
-
-        isLoggedIn = false;
-
-        updateHeader();
+        return;
 
       }
 
+
+      /*
+       CUSTOMER LOGGED OUT
+      */
+
+      saveTokens(
+        null,
+        null
+      );
+
+
+      isLoggedIn = false;
+
+
+      updateHeader();
+
     }
+
   );
 
 
-  /* ======================================
-     RESTORE SAVED SESSION
-  ====================================== */
+  /* ========================================
+     RESTORE EXISTING LOGIN
+  ======================================== */
 
   const storedJWT =
     localStorage.getItem(
       "acesCleengJWT"
     );
+
 
   const storedRefreshToken =
     localStorage.getItem(
@@ -385,20 +555,86 @@ function connectToCleeng() {
     storedRefreshToken
   ) {
 
+
     cleengJWT =
       storedJWT;
+
 
     cleengRefreshToken =
       storedRefreshToken;
 
+
     isLoggedIn = true;
 
+
     updateHeader();
+
+
+    /*
+     Restore session into
+     Cleeng Hosted Widgets.
+    */
 
     syncCleengAuth();
 
   }
+
 }
+
+
+/* ==========================================
+   AUTO OPEN CHECKOUT AFTER COUPON RELOAD
+========================================== */
+
+window.addEventListener(
+  "load",
+  () => {
+
+
+    const shouldOpen =
+      sessionStorage.getItem(
+        "openCheckoutAfterReload"
+      );
+
+
+    if (
+      shouldOpen !== "true"
+    ) {
+      return;
+    }
+
+
+    sessionStorage.removeItem(
+      "openCheckoutAfterReload"
+    );
+
+
+    /*
+     Give Cleeng time to initialize.
+    */
+
+    setTimeout(
+      async () => {
+
+
+        if (isLoggedIn) {
+
+          await syncCleengAuth();
+
+        }
+
+
+        openModal(
+          checkoutModal
+        );
+
+
+      },
+      800
+    );
+
+  }
+);
 
 
 /* ==========================================
