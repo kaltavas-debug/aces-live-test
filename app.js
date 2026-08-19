@@ -1,14 +1,5 @@
-/* ==========================================
-   CONFIG
-========================================== */
-
 const HOME_URL =
   "https://kaltavas-debug.github.io/aces-live-test/";
-
-
-/* ==========================================
-   ELEMENTS
-========================================== */
 
 const checkoutModal =
   document.getElementById("checkoutModal");
@@ -38,7 +29,9 @@ const logoutBtn =
 
 let isLoggedIn = false;
 let cleengConnected = false;
-let loginStartedHere = false;
+
+let cleengJWT = null;
+let cleengRefreshToken = null;
 
 
 /* ==========================================
@@ -93,23 +86,117 @@ function updateHeader() {
 
 
 /* ==========================================
+   STORE AUTH TOKENS
+========================================== */
+
+function saveTokens(jwt, refreshToken) {
+
+  cleengJWT = jwt;
+  cleengRefreshToken = refreshToken;
+
+  if (jwt && refreshToken) {
+
+    localStorage.setItem(
+      "acesCleengJWT",
+      jwt
+    );
+
+    localStorage.setItem(
+      "acesCleengRefreshToken",
+      refreshToken
+    );
+
+  } else {
+
+    localStorage.removeItem(
+      "acesCleengJWT"
+    );
+
+    localStorage.removeItem(
+      "acesCleengRefreshToken"
+    );
+
+  }
+
+}
+
+
+/* ==========================================
+   SYNC TOKENS INTO CLEENG
+========================================== */
+
+async function syncCleengAuth() {
+
+  if (
+    !cleengJWT ||
+    !cleengRefreshToken
+  ) {
+    return false;
+  }
+
+  if (
+    !window.cleeng ||
+    typeof window.cleeng.setAuthTokens !==
+      "function"
+  ) {
+    return false;
+  }
+
+  try {
+
+    await window.cleeng.setAuthTokens({
+      jwt: cleengJWT,
+      refreshToken: cleengRefreshToken
+    });
+
+    console.log(
+      "Cleeng tokens synced"
+    );
+
+    return true;
+
+  } catch (error) {
+
+    console.error(
+      "Unable to sync Cleeng tokens:",
+      error
+    );
+
+    return false;
+
+  }
+
+}
+
+
+/* ==========================================
    CHECKOUT
 ========================================== */
 
-function openCheckout() {
+async function openCheckout() {
+
+  /*
+   IMPORTANT:
+   Push the authenticated session
+   into every Hosted Widget before
+   opening checkout.
+  */
+
+  if (isLoggedIn) {
+    await syncCleengAuth();
+  }
+
 
   const params =
     new URLSearchParams(
       window.location.search
     );
 
-  const coupon =
-    params.get("couponCode");
-
   console.log(
     "Coupon:",
-    coupon || "none"
+    params.get("couponCode")
   );
+
 
   openModal(
     checkoutModal
@@ -136,27 +223,22 @@ navStreamBtn.addEventListener(
 
 accountBtn.addEventListener(
   "click",
-  () => {
+  async () => {
 
     if (isLoggedIn) {
+
+      /*
+       Also synchronize before
+       opening Account.
+      */
+
+      await syncCleengAuth();
 
       openModal(
         accountModal
       );
 
     } else {
-
-      /*
-       Remember that login was
-       initiated from this page.
-      */
-
-      loginStartedHere = true;
-
-      sessionStorage.setItem(
-        "acesLoginStarted",
-        "true"
-      );
 
       openModal(
         loginModal
@@ -188,28 +270,32 @@ logoutBtn.addEventListener(
 
       }
 
-      isLoggedIn = false;
-
-      sessionStorage.removeItem(
-        "acesLoginStarted"
-      );
-
-      updateHeader();
-
-      closeAll();
-
-      console.log(
-        "Logged out"
-      );
-
     } catch (error) {
 
       console.error(
-        "Logout failed:",
+        "Logout error:",
         error
       );
 
     }
+
+
+    cleengJWT = null;
+    cleengRefreshToken = null;
+
+    isLoggedIn = false;
+
+    localStorage.removeItem(
+      "acesCleengJWT"
+    );
+
+    localStorage.removeItem(
+      "acesCleengRefreshToken"
+    );
+
+    updateHeader();
+
+    closeAll();
 
   }
 );
@@ -238,9 +324,7 @@ document.addEventListener(
   event => {
 
     if (event.key === "Escape") {
-
       closeAll();
-
     }
 
   }
@@ -248,14 +332,10 @@ document.addEventListener(
 
 
 /* ==========================================
-   CLEENG AUTHENTICATION
+   CLEENG
 ========================================== */
 
 function connectToCleeng() {
-
-  /*
-   Wait for Cleeng JS to load.
-  */
 
   if (
     !window.cleeng ||
@@ -281,108 +361,125 @@ function connectToCleeng() {
 
   cleengConnected = true;
 
+
   console.log(
     "Cleeng connected"
   );
 
 
-  /*
-   Cleeng calls this whenever
-   authentication changes.
-
-   Login
-   Registration
-   Token refresh
-   Logout
-  */
-
   window.cleeng.onAuthTokensUpdate(
-    ({ jwt, refreshToken }) => {
+    async ({ jwt, refreshToken }) => {
 
-      const wasLoggedIn =
-        isLoggedIn;
+      console.log(
+        "Cleeng auth update:",
+        {
+          jwt: Boolean(jwt),
+          refreshToken:
+            Boolean(refreshToken)
+        }
+      );
 
 
-      isLoggedIn =
-        Boolean(
-          jwt &&
+      if (
+        jwt &&
+        refreshToken
+      ) {
+
+        /*
+         Save the actual Cleeng session.
+        */
+
+        saveTokens(
+          jwt,
           refreshToken
         );
 
 
-      console.log(
-        "Cleeng authentication:",
-        isLoggedIn
-      );
+        isLoggedIn = true;
 
-
-      updateHeader();
-
-
-      /* ==================================
-         SUCCESSFUL LOGIN
-      ================================== */
-
-      const loginWasStarted =
-        loginStartedHere ||
-        sessionStorage.getItem(
-          "acesLoginStarted"
-        ) === "true";
-
-
-      if (
-        isLoggedIn &&
-        !wasLoggedIn &&
-        loginWasStarted
-      ) {
-
-        console.log(
-          "Login successful"
-        );
+        updateHeader();
 
 
         /*
-         Clear the login marker
-         BEFORE redirecting.
+         Explicitly synchronize
+         authentication across all
+         Hosted Widgets.
         */
 
-        sessionStorage.removeItem(
-          "acesLoginStarted"
-        );
-
-        loginStartedHere = false;
+        await syncCleengAuth();
 
 
         /*
-         Explicitly return user to:
-
-         https://kaltavas-debug.github.io/
-         aces-live-test/
+         Close Login after success.
         */
 
-        window.location.replace(
-          HOME_URL
+        if (
+          loginModal.classList.contains(
+            "active"
+          )
+        ) {
+
+          closeAll();
+
+        }
+
+
+      } else {
+
+        saveTokens(
+          null,
+          null
         );
 
-        return;
+        isLoggedIn = false;
 
-      }
-
-
-      /* ==================================
-         LOGOUT
-      ================================== */
-
-      if (!isLoggedIn) {
-
-        sessionStorage.removeItem(
-          "acesLoginStarted"
-        );
+        updateHeader();
 
       }
 
     }
   );
+
+
+  /* ======================================
+     RESTORE EXISTING SESSION
+  ====================================== */
+
+  const storedJWT =
+    localStorage.getItem(
+      "acesCleengJWT"
+    );
+
+  const storedRefreshToken =
+    localStorage.getItem(
+      "acesCleengRefreshToken"
+    );
+
+
+  if (
+    storedJWT &&
+    storedRefreshToken
+  ) {
+
+    cleengJWT =
+      storedJWT;
+
+    cleengRefreshToken =
+      storedRefreshToken;
+
+    isLoggedIn = true;
+
+    updateHeader();
+
+
+    /*
+     Restore authentication into
+     the Cleeng widgets after reload.
+    */
+
+    syncCleengAuth();
+
+  }
 
 }
 
