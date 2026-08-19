@@ -1,43 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>Aces Live</title>
 
   <!--
     IMPORTANT:
-    Add couponCode BEFORE Cleeng loads.
+    Add couponCode to the CURRENT URL before Cleeng loads.
 
-    replaceState changes the URL without:
-    - redirecting
-    - refreshing
-    - navigating away
+    This does NOT redirect.
+    This does NOT reload.
   -->
   <script>
     (function () {
       const url = new URL(window.location.href);
 
-      if (
-        url.searchParams.get("couponCode") !==
-        "NEVERFOLD"
-      ) {
-        url.searchParams.set(
-          "couponCode",
-          "NEVERFOLD"
-        );
+      if (url.searchParams.get("couponCode") !== "NEVERFOLD") {
+        url.searchParams.set("couponCode", "NEVERFOLD");
 
         window.history.replaceState(
           {},
           "",
-          url.pathname +
-            url.search +
-            url.hash
+          url.pathname + url.search + url.hash
         );
       }
     })();
@@ -49,31 +35,18 @@
     src="https://widgets.prod.cleeng.com/cleeng.js">
   </script>
 
-  <link
-    rel="stylesheet"
-    href="./styles.css"
-  >
+  <link rel="stylesheet" href="./styles.css" />
 </head>
-
 
 <body>
 
-  <!-- ======================================
-       NAV
-  ======================================= -->
-
+  <!-- HEADER -->
   <header class="nav">
 
     <div class="logo">
-      <div class="aces-mark">
-        A
-      </div>
-
-      <span>
-        ACES LIVE
-      </span>
+      <div class="aces-mark">A</div>
+      <span>ACES LIVE</span>
     </div>
-
 
     <div class="nav-actions">
 
@@ -83,13 +56,11 @@
         LOGIN
       </button>
 
-
       <button
         class="logout-btn"
         id="logoutBtn">
         LOGOUT
       </button>
-
 
       <button
         class="nav-stream-btn"
@@ -102,13 +73,9 @@
   </header>
 
 
-
   <main>
 
-    <!-- ======================================
-         HERO
-    ======================================= -->
-
+    <!-- HERO -->
     <section class="hero">
 
       <div class="hero-content">
@@ -117,30 +84,23 @@
           LAS VEGAS ACES
         </span>
 
-
         <h1>
           ACES LIVE<br>
           STREAMING
         </h1>
 
-
         <p>
-          Aces Live is a digital subscription
-          service that lets fans stream select
-          Las Vegas Aces regular season games.
+          Aces Live is a digital subscription service that lets fans
+          stream select Las Vegas Aces regular season games.
           Watch online wherever you are.
         </p>
-
 
         <button
           class="primary-btn"
           id="heroStreamBtn">
 
           START STREAMING
-
-          <span>
-            →
-          </span>
+          <span>→</span>
 
         </button>
 
@@ -155,9 +115,7 @@
             ▶
           </div>
 
-          <span>
-            ACES LIVE
-          </span>
+          <span>ACES LIVE</span>
 
         </div>
 
@@ -166,11 +124,7 @@
     </section>
 
 
-
-    <!-- ======================================
-         GAMES
-    ======================================= -->
-
+    <!-- GAMES -->
     <section class="games-section">
 
       <div class="section-inner">
@@ -180,7 +134,6 @@
           <span class="eyebrow dark">
             WATCH LIVE
           </span>
-
 
           <h2>
             UPCOMING GAMES<br>
@@ -192,52 +145,37 @@
 
         <div class="games-grid">
 
-
           <article class="game-card">
 
             <div class="game-date">
               THU AUG 20 · 7:00 PM PDT
             </div>
 
-
             <div class="matchup">
 
               <div class="team">
-
-                <div class="team-logo">
-                  CT
-                </div>
+                <div class="team-logo">CT</div>
 
                 <span>
                   CONNECTICUT<br>
                   SUN
                 </span>
-
               </div>
 
-
-              <div class="at">
-                @
-              </div>
-
+              <div class="at">@</div>
 
               <div class="team">
-
-                <div class="team-logo aces">
-                  A
-                </div>
+                <div class="team-logo aces">A</div>
 
                 <span>
                   LAS VEGAS<br>
                   ACES
                 </span>
-
               </div>
 
             </div>
 
           </article>
-
 
 
           <article class="game-card">
@@ -246,45 +184,31 @@
               SUN AUG 23 · 4:00 PM PDT
             </div>
 
-
             <div class="matchup">
 
               <div class="team">
-
-                <div class="team-logo aces">
-                  A
-                </div>
+                <div class="team-logo aces">A</div>
 
                 <span>
                   LAS VEGAS<br>
                   ACES
                 </span>
-
               </div>
 
-
-              <div class="at">
-                @
-              </div>
-
+              <div class="at">@</div>
 
               <div class="team">
-
-                <div class="team-logo">
-                  T
-                </div>
+                <div class="team-logo">T</div>
 
                 <span>
                   TORONTO<br>
                   TEMPO
                 </span>
-
               </div>
 
             </div>
 
           </article>
-
 
 
           <article class="game-card">
@@ -293,45 +217,31 @@
               THU SEP 17 · 7:00 PM PDT
             </div>
 
-
             <div class="matchup">
 
               <div class="team">
-
-                <div class="team-logo aces">
-                  A
-                </div>
+                <div class="team-logo aces">A</div>
 
                 <span>
                   LAS VEGAS<br>
                   ACES
                 </span>
-
               </div>
 
-
-              <div class="at">
-                @
-              </div>
-
+              <div class="at">@</div>
 
               <div class="team">
-
-                <div class="team-logo">
-                  SEA
-                </div>
+                <div class="team-logo">SEA</div>
 
                 <span>
                   SEATTLE<br>
                   STORM
                 </span>
-
               </div>
 
             </div>
 
           </article>
-
 
 
           <article class="game-card">
@@ -340,45 +250,31 @@
               SUN SEP 20 · 6:00 PM PDT
             </div>
 
-
             <div class="matchup">
 
               <div class="team">
-
-                <div class="team-logo">
-                  SEA
-                </div>
+                <div class="team-logo">SEA</div>
 
                 <span>
                   SEATTLE<br>
                   STORM
                 </span>
-
               </div>
 
-
-              <div class="at">
-                @
-              </div>
-
+              <div class="at">@</div>
 
               <div class="team">
-
-                <div class="team-logo aces">
-                  A
-                </div>
+                <div class="team-logo aces">A</div>
 
                 <span>
                   LAS VEGAS<br>
                   ACES
                 </span>
-
               </div>
 
             </div>
 
           </article>
-
 
 
           <article class="game-card">
@@ -387,45 +283,31 @@
               THU SEP 24 · 7:00 PM PDT
             </div>
 
-
             <div class="matchup">
 
               <div class="team">
-
-                <div class="team-logo aces">
-                  A
-                </div>
+                <div class="team-logo aces">A</div>
 
                 <span>
                   LAS VEGAS<br>
                   ACES
                 </span>
-
               </div>
 
-
-              <div class="at">
-                @
-              </div>
-
+              <div class="at">@</div>
 
               <div class="team">
-
-                <div class="team-logo">
-                  PHX
-                </div>
+                <div class="team-logo">PHX</div>
 
                 <span>
                   PHOENIX<br>
                   MERCURY
                 </span>
-
               </div>
 
             </div>
 
           </article>
-
 
         </div>
 
@@ -434,11 +316,7 @@
     </section>
 
 
-
-    <!-- ======================================
-         APP
-    ======================================= -->
-
+    <!-- APP -->
     <section class="app-section">
 
       <div class="app-copy">
@@ -447,12 +325,10 @@
           WATCH ANYWHERE
         </span>
 
-
         <h2>
           DOWNLOAD<br>
           THE ACES APP
         </h2>
-
 
         <p>
           Catch Aces Live wherever you go.
@@ -460,32 +336,16 @@
           the Las Vegas Aces app.
         </p>
 
-
         <div class="store-buttons">
 
           <button class="store-btn">
-
-            <small>
-              Download on the
-            </small>
-
-            <strong>
-              App Store
-            </strong>
-
+            <small>Download on the</small>
+            <strong>App Store</strong>
           </button>
 
-
           <button class="store-btn">
-
-            <small>
-              GET IT ON
-            </small>
-
-            <strong>
-              Google Play
-            </strong>
-
+            <small>GET IT ON</small>
+            <strong>Google Play</strong>
           </button>
 
         </div>
@@ -501,13 +361,9 @@
             A
           </div>
 
-          <strong>
-            ACES LIVE
-          </strong>
+          <strong>ACES LIVE</strong>
 
-          <small>
-            WATCH LIVE
-          </small>
+          <small>WATCH LIVE</small>
 
         </div>
 
@@ -516,29 +372,22 @@
     </section>
 
 
-
-    <!-- ======================================
-         FAQ
-    ======================================= -->
-
+    <!-- HELP -->
     <section class="faq-section">
 
       <span class="eyebrow dark">
         FREQUENTLY ASKED QUESTIONS
       </span>
 
-
       <h2>
         NEED SOME HELP?
       </h2>
 
-
       <p>
         Have a question about Aces Live?
-        Visit our Help Center for answers
-        on subscriptions, streaming, and more.
+        Visit our Help Center for answers on subscriptions,
+        streaming, and more.
       </p>
-
 
       <a
         href="https://lasvegasacessupport.zendesk.com/hc/en-us"
@@ -554,10 +403,9 @@
   </main>
 
 
-
-  <!-- ======================================
+  <!-- =========================================
        CHECKOUT
-  ======================================= -->
+  ========================================== -->
 
   <div
     class="modal"
@@ -568,30 +416,19 @@
       data-close-modal>
     </div>
 
-
     <div class="panel">
 
       <div class="panel-header">
 
         <div>
-
-          <small>
-            ACES LIVE
-          </small>
-
-          <h3>
-            START STREAMING
-          </h3>
-
+          <small>ACES LIVE</small>
+          <h3>START STREAMING</h3>
         </div>
-
 
         <button
           class="close-btn"
           data-close-modal>
-
           ✕
-
         </button>
 
       </div>
@@ -613,10 +450,9 @@
   </div>
 
 
-
-  <!-- ======================================
+  <!-- =========================================
        LOGIN
-  ======================================= -->
+  ========================================== -->
 
   <div
     class="modal"
@@ -627,42 +463,25 @@
       data-close-modal>
     </div>
 
-
     <div class="panel">
 
       <div class="panel-header">
 
         <div>
-
-          <small>
-            ACES LIVE
-          </small>
-
-          <h3>
-            LOGIN
-          </h3>
-
+          <small>ACES LIVE</small>
+          <h3>LOGIN</h3>
         </div>
-
 
         <button
           class="close-btn"
           data-close-modal>
-
           ✕
-
         </button>
 
       </div>
 
 
       <div class="panel-body">
-
-        <!--
-          Cleeng officially supports
-          data-cleeng-widget="login"
-          for directly opening Login.
-        -->
 
         <div
           data-cleeng-widget="login"
@@ -677,10 +496,9 @@
   </div>
 
 
-
-  <!-- ======================================
-       MY ACCOUNT
-  ======================================= -->
+  <!-- =========================================
+       ACCOUNT
+  ========================================== -->
 
   <div
     class="modal"
@@ -691,30 +509,19 @@
       data-close-modal>
     </div>
 
-
     <div class="panel">
 
       <div class="panel-header">
 
         <div>
-
-          <small>
-            ACES LIVE
-          </small>
-
-          <h3>
-            MY ACCOUNT
-          </h3>
-
+          <small>ACES LIVE</small>
+          <h3>MY ACCOUNT</h3>
         </div>
-
 
         <button
           class="close-btn"
           data-close-modal>
-
           ✕
-
         </button>
 
       </div>
@@ -735,11 +542,7 @@
   </div>
 
 
-
-  <!-- ======================================
-       FOOTER
-  ======================================= -->
-
+  <!-- FOOTER -->
   <footer>
 
     <div class="footer-logo">
@@ -752,7 +555,6 @@
 
     </div>
 
-
     <span>
       © 2026 LAS VEGAS ACES
     </span>
@@ -763,5 +565,4 @@
   <script src="./app.js"></script>
 
 </body>
-
 </html>
